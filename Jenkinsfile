@@ -7,7 +7,7 @@ node {
 
     docker.image('maven:3.9.4').inside('-v ${pwd()}/.m2:/root/.m2') {
         stage('Prepare') {
-            sh 'mkdir -p .m2'
+            sh 'mkdir -p .m2 && chmod -R 777 .m2'
         }
         stage('Checkout') {
             checkout scm
