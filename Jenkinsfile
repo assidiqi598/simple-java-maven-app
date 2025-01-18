@@ -6,9 +6,17 @@ node {
     ])
 
     docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
+        stage('Checkout') {
+            checkout scm
+            sh '''
+                echo "Current Directory: $(pwd)"
+                echo "Workspace Contents:"
+                ls -la
+            '''
+        }
         stage('Build') {
             try {
-                sh 'mvn -B -DskipTests clean package -f ./pom.xml'
+                sh 'mvn -B -DskipTests clean package'
             }
             catch (e) {
                 echo "Build failed: ${e.getMessage()}"
