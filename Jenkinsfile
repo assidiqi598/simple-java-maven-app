@@ -5,7 +5,7 @@ node {
         ])
     ])
 
-    docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
+    docker.image('maven:3.9.4').inside('-v /root/.m2:/root/.m2') {
         stage('Checkout') {
             checkout scm
             sh '''
@@ -15,12 +15,7 @@ node {
             '''
         }
         stage('Build') {
-            try {
-                sh 'mvn -B -DskipTests clean package'
-            }
-            catch (e) {
-                echo "Build failed: ${e.getMessage()}"
-            }
+            sh 'mvn -B -DskipTests clean package'
         }
         stage('Test') {
             try {
@@ -31,12 +26,7 @@ node {
             }
         }
         stage('Deliver') {
-            try {
-                sh './jenkins/scripts/deliver.sh'
-            }
-            catch (e) {
-                echo "Build failed: ${e.getMessage()}"
-            }
+            sh './jenkins/scripts/deliver.sh'
         }
     }
 }
