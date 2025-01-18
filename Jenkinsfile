@@ -14,13 +14,6 @@ node {
                 ls -la
             '''
         }
-        stage('Prepare') {
-            sh '''
-                mkdir -p /root/.m2/repository
-                chmod -R 777 /root/.m2
-                echo "Prepared /root/.m2 directory"
-            '''
-        }
         stage('Build') {
             sh 'mvn -B -DskipTests clean package'
         }
