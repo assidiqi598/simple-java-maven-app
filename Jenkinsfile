@@ -4,7 +4,7 @@ node {
             pollSCM('H/2 * * * *')
         ])
     ])
-    
+
     def workspace = pwd()
     docker.image('maven:3.9.4').inside("-v ${workspace}/.m2:/tmp/.m2") {
         stage('Checkout') {
@@ -26,7 +26,7 @@ node {
         }
         stage('Test') {
             try {
-                sh 'mvn test'
+                sh 'mvn -Dmaven.repo.local=/tmp/.m2/repository test'
             }
             finally {
                 junit 'target/surefire-reports/*.xml'
