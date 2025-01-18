@@ -21,7 +21,9 @@ node {
             '''
         }
         stage('Build') {
-            sh 'mvn -B -DskipTests clean package'
+            withEnv(['HOME=/root']) {
+                sh 'mvn -B -DskipTests clean package'
+            }
         }
         stage('Test') {
             try {
