@@ -5,13 +5,7 @@ node {
         ])
     ])
 
-    def workspace = pwd()
-    echo "Workspace Directory: ${workspace}"
-
-    docker.image('maven:3.9.4').inside('-v ${workspace}/.m2:/root/.m2') {
-        stage('Prepare') {
-            sh 'mkdir -p .m2 && chmod -R 777 .m2'
-        }
+    docker.image('maven:3.9.4').inside('-v /root/.m2:/root/.m2') {
         stage('Checkout') {
             checkout scm
             sh '''
@@ -20,10 +14,16 @@ node {
                 ls -la
             '''
         }
+        stage('Debug') {
+            sh '''
+                echo "Checking /root/.m2 inside container..."
+                ls -la /root/.m2
+                touch /root/.m2/test_file
+                echo "Test file created successfully in /root/.m2"
+            '''
+        }
         stage('Build') {
-            withEnv(['HOME=/root']) {
-                sh 'mvn -B -DskipTests clean package'
-            }
+            sh 'mvn -B -DskipTests -Dmaven.repo.local=/.m2/repository clean package'
         }
         stage('Test') {
             try {
