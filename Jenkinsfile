@@ -5,7 +5,7 @@ node {
         ])
     ])
 
-    docker.image('maven:3.9.4').inside("-v /root/.m2:/root/.m2") {
+    docker.image('maven:3.9.4').inside("--user root -v /root/.m2:/root/.m2") {
         stage('Checkout') {
             checkout scm
             sh '''
