@@ -5,7 +5,7 @@ node {
         ])
     ])
 
-    docker.image('maven:3.9.4').inside('-v ./.m2:/root/.m2') {
+    docker.image('maven:3.9.4').inside('-v ${pwd()}/.m2:/root/.m2') {
         stage('Prepare') {
             sh 'mkdir -p .m2'
         }
