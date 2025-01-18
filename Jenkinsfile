@@ -5,8 +5,7 @@ node {
         ])
     ])
 
-    def workspace = pwd()
-    docker.image('maven:3.9.4').inside("-v ${workspace}/.m2:/tmp/.m2") {
+    docker.image('maven:3.9.4').inside("-v /root/.m2:/root/.m2") {
         stage('Checkout') {
             checkout scm
             sh '''
@@ -15,18 +14,19 @@ node {
                 ls -la
             '''
         }
-        stage('Debug') {
+        stage('Prepare') {
             sh '''
-                echo "Current User: $(whoami)"
-                ls -la /tmp/.m2
+                mkdir -p /root/.m2/repository
+                chmod -R 777 /root/.m2
+                echo "Prepared /root/.m2 directory"
             '''
         }
         stage('Build') {
-            sh 'mvn -B -Dmaven.repo.local=/tmp/.m2/repository -DskipTests clean package'
+            sh 'mvn -B -DskipTests clean package'
         }
         stage('Test') {
             try {
-                sh 'mvn -Dmaven.repo.local=/tmp/.m2/repository test'
+                sh 'mvn test'
             }
             finally {
                 junit 'target/surefire-reports/*.xml'
