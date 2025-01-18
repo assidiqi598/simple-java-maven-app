@@ -8,7 +8,7 @@ node {
     docker.image('maven:3.9.0').inside('-v /root/.m2:/root/.m2') {
         stage('Build') {
             try {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -B -DskipTests clean package -f ./pom.xml'
             }
             catch (e) {
                 echo "Build failed: ${e.getMessage()}"
