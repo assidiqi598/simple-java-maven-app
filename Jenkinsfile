@@ -36,12 +36,17 @@ node {
             sh 'ls target/'
             sh 'apt-get update && apt-get install -y openssh-client'
             withCredentials([sshUserPrivateKey(credentialsId: 'oracle-vps-private-key', keyFileVariable: 'SSH_KEY')]) {
-                sh """
+                sh '''
+                    mkdir -p ~/.ssh
+                    ssh-keyscan -H ${vpsHost} >> ~/.ssh/known_hosts
+                    chmod 600 ~/.ssh/known_hosts
+                '''
+                sh '''
                     scp -i $SSH_KEY ${jarFile} ${vpsUser}@${vpsHost}:${vpsPath}/my-app-1.0-SNAPSHOT.jar
-                """
-                sh """
+                '''
+                sh '''
                     ssh -i $SSH_KEY ${vpsUser}@${vpsHost} "java -jar ${vpsPath}/my-app-1.0-SNAPSHOT.jar"
-                """
+                '''
             }
         }
     }
