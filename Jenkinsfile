@@ -33,19 +33,15 @@ node {
             def vpsUser = "ubuntu"
             def vpsHost = "152.69.212.167"
             def vpsPath = "/home/ubuntu"
-            try {
-                sh 'ls target/'
-                withCredentials([sshUserPrivateKey(credentialsId: 'oracle-vps-private-key', keyFileVariable: 'SSH_KEY')]) {
-                    sh """
-                        scp -i $SSH_KEY ${jarFile} ${vpsUser}@${vpsHost}:${vpsPath}/my-app-1.0-SNAPSHOT.jar
-                    """
-                    sh """
-                        ssh -i $SSH_KEY ${vpsUser}@${vpsHost} "java -jar ${vpsPath}/my-app-1.0-SNAPSHOT.jar"
-                    """
-                }
-            }
-            catch (Exception e) {
-                echo 'Exception occurred: ' + e.toString()
+            sh 'ls target/'
+            sh 'apt-get update && apt-get install -y openssh-client'
+            withCredentials([sshUserPrivateKey(credentialsId: 'oracle-vps-private-key', keyFileVariable: 'SSH_KEY')]) {
+                sh """
+                    scp -i $SSH_KEY ${jarFile} ${vpsUser}@${vpsHost}:${vpsPath}/my-app-1.0-SNAPSHOT.jar
+                """
+                sh """
+                    ssh -i $SSH_KEY ${vpsUser}@${vpsHost} "java -jar ${vpsPath}/my-app-1.0-SNAPSHOT.jar"
+                """
             }
         }
     }
