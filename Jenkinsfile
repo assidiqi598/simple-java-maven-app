@@ -46,6 +46,7 @@ node {
                 """
                 sh """
                     ssh -i $SSH_KEY ${vpsUser}@${vpsHost} "java -jar ${vpsPath}/my-app-1.0-SNAPSHOT.jar"
+                    sleep 60
                 """
             }
         }
