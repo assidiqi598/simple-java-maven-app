@@ -25,8 +25,7 @@ node {
                 junit 'target/surefire-reports/*.xml'
             }
         }
-        stage('Deliver') {
-            sh './jenkins/scripts/deliver.sh'
+        stage('Manual Approval') {
             input message: 'Lanjutkan ke tahap Deploy?'
         }
         stage('Deploy') {
@@ -34,6 +33,7 @@ node {
             def vpsUser = "ubuntu"
             def vpsHost = "152.69.212.167"
             def vpsPath = "/home/ubuntu"
+            sh './jenkins/scripts/deliver.sh'
             sh 'ls target/'
             sh 'apt-get update && apt-get install -y openssh-client'
             withCredentials([sshUserPrivateKey(credentialsId: 'oracle-vps-private-key', keyFileVariable: 'SSH_KEY')]) {
