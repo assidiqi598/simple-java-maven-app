@@ -27,6 +27,7 @@ node {
         }
         stage('Deliver') {
             sh './jenkins/scripts/deliver.sh'
+            input message: 'Lanjutkan ke tahap Deploy?'
         }
         stage('Deploy') {
             def jarFile = "target/my-app-1.0-SNAPSHOT.jar"
